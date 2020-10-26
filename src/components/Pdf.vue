@@ -65,7 +65,6 @@ export default {
   props: ['dialog', 'receipt'],
      data () {
     return {
-      // dialog: false,
       maximizedToggle: true
     }
   },

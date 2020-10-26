@@ -1,6 +1,8 @@
 <template>
     <q-page class="q-pa-md">
         <div class="q-pt-lg row justify-center">
+            <transition appear enter-active-class="animated zoomIn" leave-active-class="animated zoomOut"> 
+      
             <q-card class="col-12 col-sm-6">
           <q-card-section class="row text-center">
             <div class="text-h6 col-12 text-center"> Enter Email</div>
@@ -27,8 +29,8 @@
                 </q-card-actions>
             </q-form>
         </q-card-section>
-
       </q-card>
+            </transition>
         </div>
     </q-page>
 </template>

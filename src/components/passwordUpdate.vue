@@ -9,17 +9,25 @@
             <q-input
             rounded
             outlined
-            type="password"
+            :type="isCurPwd ? 'password' : 'text'"
             label="Current password"
             clearable
             :value="currentPassword"
             @input="$emit('update:currentPassword', $event)"
             lazy-rules
-          />
+          >
+            <template v-slot:append>
+              <q-icon
+                :name="isCurPwd ? 'visibility_off' : 'visibility'"
+                class="cursor-pointer"
+                @click="isCurPwd = !isCurPwd"
+                />
+            </template>
+          </q-input>
           <q-input
             rounded
             outlined
-            type="password"
+            :type="isPwd ? 'password' : 'text'"
             label="New Password"
             class="q-pt-lg"
             lazy-rules
@@ -29,11 +37,19 @@
             :rules="[
                   val => val.length >= 8 || 'please your password must be atleast 8 characters'
                 ]"
-          />
+          >
+            <template v-slot:append>
+              <q-icon
+                :name="isPwd ? 'visibility_off' : 'visibility'"
+                class="cursor-pointer"
+                @click="isPwd = !isPwd"
+                />
+            </template>
+          </q-input>
           <q-input
             rounded
             outlined
-            type="password"
+            :type="isConfPwd ? 'password' : 'text'"
             label="Confirm New Password"
             class="q-pt-lg"
             lazy-rules
@@ -43,7 +59,15 @@
             :rules="[
                   val => val === password || 'passwords dont match'
                 ]"
-          />
+          >
+            <template v-slot:append>
+              <q-icon
+              :name="isConfPwd ? 'visibility_off' : 'visibility'"
+              class="cursor-pointer"
+              @click="isConfPwd = !isConfPwd"
+              />
+            </template>
+          </q-input>
           <div class="text-center q-pt-lg">
             <q-btn label="update password" type="submit" color="primary"/>
           </div>
@@ -62,6 +86,13 @@ export default {
     methods: {
       submit() {
         this.$emit('submitted')
+      }
+    },
+    data() {
+      return {
+        isPwd: true,
+        isCurPwd: true,
+        isConfPwd: true,
       }
     }
 }

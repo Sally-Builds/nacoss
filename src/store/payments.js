@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {Loading, Notify, Cookies, LocalStorage} from 'quasar'
+import {Loading, Notify, Cookies, LocalStorage, QSpinnerPie} from 'quasar'
 const state = {
 }
 
@@ -12,15 +12,17 @@ const mutations = {
 const actions = {
     async makePayment({commit}, data) {
         try{
-            Loading.show()
+            Loading.show({spinner: QSpinnerPie})
             const result = await axios({
                 method: 'POST',
                 url: 'api/v1/payments/makepayments',
                 withCredentials: true,
                 data: {duesId: data},
             })
+            console.log(result)
           window.location = result.data.data.data.link
         }catch(e){
+            console.log(e)
             Loading.hide()
             if(e.response.data.message){
                 Notify.create({
@@ -65,6 +67,8 @@ const actions = {
                         textColor: 'white',
                     })
                     dispatch('auth/fetchUser', null, {root: true})
+                    this.$router.replace('/dashboard')
+                }else if(data.status === 'cancelled'){
                     this.$router.replace('/dashboard')
                 }
             }

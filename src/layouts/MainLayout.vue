@@ -4,11 +4,12 @@
     <q-header bordered class="text-grey-11" style="background-color: #282828">
       <q-toolbar>
         <q-toolbar-title class="q-pl-lg">
+          Caritas Nacoss
           <q-avatar>
-            <img src="~assets/nacoss.png" alt="" />
+            <!-- <img src="~assets/nacoss.png" alt="" /> -->
+            <img src="~assets/caritas.png" alt="" />
 
           </q-avatar>
-          Nacoss
         </q-toolbar-title>
           <q-chip v-if="user">
             <q-avatar>
@@ -16,7 +17,7 @@
             </q-avatar>
             {{user.name.split(' ')[0]}}
           </q-chip>
-        <div class="bg-screen">
+        <div class="bg-screen" v-if="userRole">
           <q-btn label="Home" icon="home" v-if="userRole" :to="userRole === 'user' ? '/dashboard' : '/dashboard/admin'" flat />
           <q-btn label="settings" icon="settings" to="/settings" flat />
           <q-btn label="logout" icon="logout" @click="logout" flat />
@@ -31,6 +32,7 @@
     <q-footer class="text-grey-11">
       <q-tabs class="she sm-screen">
         <q-route-tab
+          v-if="userRole"
           icon="home"
           :to="userRole === 'user' ? '/dashboard' : '/dashboard/admin'"
           label="Home" />

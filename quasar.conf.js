@@ -32,7 +32,7 @@ module.exports = function (/* ctx */) {
     extras: [
       // 'ionicons-v4',
       // 'mdi-v5',
-      // 'fontawesome-v5',
+      'fontawesome-v5',
       // 'eva-icons',
       // 'themify',
       // 'line-awesome',
@@ -79,10 +79,10 @@ cfg.module.rules.push({
       port: 8080,
       open: false, // opens browser window automatically
       proxy: {
-        '/': {
-          target: 'http://localhost:3000',
+        "/": {
+          target: "http://localhost:9000",
           changeOrigin: true,
-          pathRewrite: { '^/': ''}
+          pathRewrite: {"^/" : ''}
         }
       }
     },
@@ -112,12 +112,17 @@ cfg.module.rules.push({
         'Cookies',
         'LocalStorage',
         'Meta',
-      ]
+      ],
+      config: {
+        loading: {
+          spinnerColor: 'positive'
+        }
+      }
     },
 
     // animations: 'all', // --- includes all animations
     // https://quasar.dev/options/animations
-    animations: [],
+    animations: ['zoomIn', 'zoomOut'],
 
     // https://quasar.dev/quasar-cli/developing-ssr/configuring-ssr
     ssr: {

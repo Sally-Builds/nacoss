@@ -3,6 +3,7 @@ const routes = [
   {
     path: '/dashboard',
     component: () => import('layouts/MainLayout.vue'),
+    meta:{auth: true}, 
     children: [
       { path: '', component: () => import('pages/Index.vue'), meta:{user: true} },
       { path: '/dashboard/admin', component: () => import('pages/Admin.vue'), meta:{adminUser: true}  },
@@ -12,12 +13,12 @@ const routes = [
   {
     path: '',
     component: () => import('layouts/Layout.vue'),
-    meta:{noAuth: true},
+    meta:{auth: false},
     children: [
-      { path: '', component: () => import('pages/Login.vue') },
-      { path: '/signup', component: () => import('pages/Signup.vue') },
-      { path: '/resetpassword/:id', component: () => import('pages/resetpassword.vue') },
-      { path: '/forgotpassword', component: () => import('pages/forgotpassword.vue') },
+      { path: '', component: () => import('pages/Login.vue'), meta:{noAuth: true}, },
+      { path: '/signup', component: () => import('pages/Signup.vue'), meta:{noAuth: true}, },
+      { path: '/resetpassword/:id', component: () => import('pages/resetpassword.vue'), meta:{noAuth: true}, },
+      { path: '/forgotpassword', component: () => import('pages/forgotpassword.vue'), meta:{noAuth: true}, },
     ]
   },
 

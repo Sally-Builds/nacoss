@@ -1,10 +1,12 @@
 <template>
   <div class="q-pa-md infoi absolute-center">
+    <transition appear enter-active-class="animated zoomIn" leave-active-class="animated zoomOut"> 
         <q-card style="width: 300px">
           <q-card-section class="row text-center">
             <div class="text-h6 col-12 text-center">
                 <q-avatar>
-                    <img src="~assets/nacoss.png" alt="" />
+                    <!-- <img src="~assets/nacoss.png" alt="" /> -->
+                    <img src="~assets/caritas.png" alt="" />
                 </q-avatar>
             </div>
           </q-card-section>
@@ -32,12 +34,20 @@
                     outlined 
                     v-model="password" 
                     label="Password"  
-                    type="password"
+                    :type="isPwd ? 'password' : 'text'"
                     class="q-mb-sm"
                     :rules="[val => !!val || 'Field is required']"
                     dense
                     lazy-rules
-                />
+                >
+                  <template v-slot:append>
+                    <q-icon
+                      :name="isPwd ? 'visibility_off' : 'visibility'"
+                      class="cursor-pointer"
+                      @click="isPwd = !isPwd"
+                     />
+                  </template>
+                </q-input>
                 <q-card-actions align="center">
                     <q-btn label="Login" type="submit" color="positive" />
                 </q-card-actions>
@@ -49,6 +59,7 @@
             <q-btn flat label="Signup" to="/signup" color="positive" />
         </q-card-section>
         </q-card>
+    </transition>
         </div>
 </template>
 
@@ -59,6 +70,7 @@ export default {
     return {
       email: '',
       password: '',
+      isPwd: true
     }
   },
   methods: {

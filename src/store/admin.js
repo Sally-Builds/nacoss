@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {Loading, Notify, Cookies, LocalStorage} from 'quasar'
+import {Loading, Notify, Cookies, LocalStorage, QSpinnerPie} from 'quasar'
 import store from '../store/auth'
 const state = {
     users: null,
@@ -116,13 +116,16 @@ const mutations = {
 const actions = {
     async getUsers({commit}, data) {
         try{
+            Loading.show({spinner: QSpinnerPie})
             const result = await axios({
                 method: 'GET',
                 url: 'api/v1/users',
                 withCredentials: true,
             })
             commit('getUsers', result.data.users)
+            Loading.hide()
         }catch(e){
+            Loading.hide()
             if(e.response.data.message){
                 Notify.create({
                     message: e.response.data.message,
@@ -154,6 +157,7 @@ const actions = {
     },
     async changePrice({dispatch}, {id, amount}){
         try{
+            Loading.show({spinner: QSpinnerPie})
             const data = {amount}
             const res = await axios({
                 method: 'PATCH',
@@ -162,13 +166,15 @@ const actions = {
                 data,
             })
             dispatch('dues/getDues', null, {root: true})
+            Loading.hide()
             Notify.create({
                     message: 'update successful',
                     icon: 'check',
                     color: 'positive',
                     textColor: 'white',
-                })
+            })
         }catch(e){
+            Loading.hide()
             if(e.response.data.message){
                 Notify.create({
                     message: e.response.data.message,
@@ -188,6 +194,7 @@ const actions = {
     },
     async makeUserPayment({dispatch}, data){
         try{
+            Loading.show({spinner: QSpinnerPie})
             const res = await axios({
                 method: 'POST',
                 url: 'api/v1/payments/adminpayments',
@@ -195,14 +202,15 @@ const actions = {
                 data,
             })
             dispatch('getUsers')
+            Loading.hide()
             Notify.create({
                     message: 'successful',
                     icon: 'check',
                     color: 'positive',
                     textColor: 'white',
-                })
+            })
         }catch(e){
-            console.log(e)
+            Loading.hide()
             if(e.response.data.message){
                 Notify.create({
                     message: e.response.data.message,

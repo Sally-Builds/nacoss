@@ -1,8 +1,9 @@
 import axios from 'axios'
-import {Loading, Notify, Cookies, LocalStorage} from 'quasar'
+import {Loading, Notify, Cookies, LocalStorage, QSpinnerPie} from 'quasar'
 const state = {
     user: null,
-    isLoggedIn: null
+    isLoggedIn: null,
+    role: null
 }
 
 const getters = {
@@ -10,7 +11,7 @@ const getters = {
         return state.user.payments
     },
     userRole(state){
-        return state.user
+        return state.role
     }
 }
 
@@ -18,6 +19,7 @@ const mutations = {
     setUser(state, user) {
         state.user = user;
         state.isLoggedIn = true;
+        state.role = user.role
     },
     clearUser(state, {user}){
         state.user = user,
@@ -28,25 +30,31 @@ const mutations = {
 const actions = {
     async login({commit, dispatch}, data) {
         try{
-            Loading.show()
+            Loading.show({spinner: QSpinnerPie})
             const result = await axios({
                 method: 'POST',
                 url: 'api/v1/users/login',
                 withCredentials: true,
                 data,
             })
-            // console.log(result.data.data.user, 'Login')
-            // commit('setUser', result.data.data.user)
+            Notify.create({
+                message: 'Login Successful',
+                icon: 'check',
+                color: 'positive',
+                textColor: 'white',
+            })
             Cookies.set('jwt', result.data.token)
-            dispatch('fetchUser')
-            // LocalStorage.set('isLoggedIn', true)
-            Loading.hide()
-            if(result.data.data.user.role == 'user'){
-                this.$router.push('/dashboard')
-            }else{
-                dispatch('admin/getUsers', null, {root: true})
+                // Loading.hide()
+            LocalStorage.set('isLoggedIn', true)
+            if(result.data.data.user.role === 'admin'){
+                    LocalStorage.set('role', 1)
+                    dispatch('fetchUser')
                 this.$router.push('/dashboard/admin')
-            }
+                }else{
+                    LocalStorage.set('role', 0)
+                    dispatch('fetchUser')
+                    this.$router.push('/dashboard')
+                }
         }catch(e){
             Loading.hide()
             if(e.response.data.message){
@@ -69,31 +77,30 @@ const actions = {
     async signup({commit, dispatch}, data) {
         try{
             Loading.show()
-            dispatch('dues/getDues', null, {root: true})
             const result = await axios({
                 method: 'POST',
                 url: 'api/v1/users/signup',
                 withCredentials: true,
                 data,
             })
-            // console.log(result.data.data.user, 'signup')
-            // commit('setUser', result.data.data.user)
-            Cookies.set('jwt', result.data.token)
-            dispatch('fetchUser')
             Notify.create({
                 message: 'Successful',
                 icon: 'check',
                 color: 'positive',
                 textColor: 'white',
             })
+            Cookies.set('jwt', result.data.token)
+            // Loading.hide()
             LocalStorage.set('isLoggedIn', true)
-            Loading.hide()
-            if(result.data.data.user.role == 'user'){
-                this.$router.push('/dashboard')
-            }else{
-                dispatch('admin/getUsers', null, {root: true})
+            if(result.data.data.user.role === 'admin'){
+                    LocalStorage.set('role', 1)
+                    dispatch('fetchUser')
                 this.$router.push('/dashboard/admin')
-            }
+                }else{
+                    LocalStorage.set('role', 0)
+                    dispatch('fetchUser')
+                    this.$router.push('/dashboard')
+                }
         }catch(e){
             Loading.hide()
             if(e.response.data.message){
@@ -115,29 +122,32 @@ const actions = {
     },
     async fetchUser({commit, dispatch}) {
         try{
-            Loading.show()
+            Loading.show({spinner: QSpinnerPie})
             const result = await axios({
                 method: 'GET',
                 url: 'api/v1/users/me',
                 withCredentials: true,
             })
             commit('setUser', result.data.user)
-            if(result.data.user.role == 'admin'){
+            if(result.data.user.role === 'admin'){
+                LocalStorage.set('role', 1)
                 dispatch('admin/getUsers', null, {root: true})
+            }else{
+                LocalStorage.set('role', 0)
             }
-            LocalStorage.set('isLoggedIn', true)
             Loading.hide()
-            return result.data.user
         }catch(e){
+            console.log(e)
             Cookies.remove('jwt')
             LocalStorage.set('isLoggedIn', false)
-            this.$router.push('/')
+            LocalStorage.remove('role')
             Loading.hide()
+            this.$router.replace('/')
         }
     },
-    async logout({commit}) {
+    async logout({commit, dispatch}) {
         try{
-            Loading.show()
+            Loading.show({spinner: QSpinnerPie})
             await axios({
                 method: 'GET',
                 url: 'api/v1/users/logout',
@@ -146,7 +156,8 @@ const actions = {
             commit('clearUser', {user: null})
             Cookies.remove('jwt')
             LocalStorage.set('isLoggedIn', false)
-            this.$router.push('/')
+            LocalStorage.remove('role')
+            this.$router.replace('/')
             Loading.hide()
         }catch(e){
             Loading.hide()
@@ -208,8 +219,7 @@ const actions = {
     },
     async resetPassword({commit}, {data, token}){
         try {
-            Loading.show()
-            console.log(token)
+            Loading.show({spinner: QSpinnerPie})
             const result = await axios({
                 method: 'PATCH',
                 url: `api/v1/users/resetpassword/${token}`,
@@ -227,13 +237,14 @@ const actions = {
             LocalStorage.set('isLoggedIn', true)
             Loading.hide()
             if(result.data.data.user.role == 'user'){
+                LocalStorage.set('role', 0)
                 this.$router.push('/dashboard')
             }else{
-                this.$router.push('/dashboard/admin')
+            LocalStorage.set('role', 1)
+            this.$router.push('/dashboard/admin')
             }
         }catch(e){
             Loading.hide()
-            console.log(e)
             if(e.response.data.message){
                 Notify.create({
                     message: e.response.data.message,

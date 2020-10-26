@@ -1,4 +1,4 @@
-import {Notify, Cookies, Loading, LocalStorage} from 'quasar'
+import {Notify, Cookies, Loading, LocalStorage, QSpinnerPie} from 'quasar'
 import axios from 'axios'
 
 const state = {
@@ -77,7 +77,7 @@ const actions = {
     },
     async updatePassword({commit, dispatch}, payload) {
         try{
-            Loading.show()
+            Loading.show({spinner: QSpinnerPie})
             const res = await axios({
                 method: 'PATCH',
                 data: payload,

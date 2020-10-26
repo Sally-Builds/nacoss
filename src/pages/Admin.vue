@@ -1,46 +1,48 @@
 <template>
   <q-page padding>
-        <div class="row" v-if="users">
-                <h6 class="col-12 text-center">Admin Panel</h6>
-            <div class="col-12 col-md-4">
-                <q-card class="bg-positive text-white">
-                    <q-card-section class="row">
-                        <span class="col-12 text-center">Registered Users</span>
-                    </q-card-section>
-                    <q-card-section class="row">
-                        <span class="col-12 text-center"><h5>{{users.length}}</h5></span>
-                    </q-card-section>
-                </q-card>
+      <transition appear enter-active-class="animated zoomIn" leave-active-class="animated zoomOut"> 
+            <div class="row" v-if="users">
+                    <h6 class="col-12 text-center">Admin Panel</h6>
+                <div class="col-12 col-md-4">
+                    <q-card class="bg-positive text-white">
+                        <q-card-section class="row">
+                            <span class="col-12 text-center">Registered Users</span>
+                        </q-card-section>
+                        <q-card-section class="row">
+                            <span class="col-12 text-center"><h5>{{users.length}}</h5></span>
+                        </q-card-section>
+                    </q-card>
+                </div>
+                <div class="col-12 col-md-4">
+                    <q-card class="bg-white text-black">
+                        <q-card-section class="row">
+                            <span class="col-12 text-center">First Semester Balance</span>
+                        </q-card-section>
+                        <q-card-section class="row">
+                            <span class="col-12 text-center"><h5>&#8358;{{firstSemesterAmount}}.00</h5></span>
+                        </q-card-section>
+                    </q-card>
+                </div>
+                <div class="col-12 col-md-4">
+                    <q-card class="bg-positive text-white">
+                        <q-card-section class="row">
+                            <span class="col-12 text-center">Second Semester Balance</span>
+                        </q-card-section>
+                        <q-card-section class="row">
+                            <span class="col-12 text-center"><h5>&#8358;{{secondSemesterAmount}}.00</h5></span>
+                        </q-card-section>
+                    </q-card>
+                </div>
             </div>
-            <div class="col-12 col-md-4">
-                <q-card class="bg-white text-black">
-                    <q-card-section class="row">
-                        <span class="col-12 text-center">First Semester Balance</span>
-                    </q-card-section>
-                    <q-card-section class="row">
-                        <span class="col-12 text-center"><h5>&#8358;{{firstSemesterAmount}}.00</h5></span>
-                    </q-card-section>
-                </q-card>
-            </div>
-            <div class="col-12 col-md-4">
-                <q-card class="bg-positive text-white">
-                    <q-card-section class="row">
-                        <span class="col-12 text-center">Second Semester Balance</span>
-                    </q-card-section>
-                    <q-card-section class="row">
-                        <span class="col-12 text-center"><h5>&#8358;{{secondSemesterAmount}}.00</h5></span>
-                    </q-card-section>
-                </q-card>
-            </div>
-        </div>
-        <div>
+      </transition>
+        <div v-if="getUsers">
             <h6 class="text-center">Semester prices</h6>
+      <transition appear enter-active-class="animated zoomIn" leave-active-class="animated zoomOut"> 
             <q-markup-table 
                 flat 
                 bordered 
-                v-if="getUsers"
                 class="table"
-                style="width: 400px"
+                style="width: 300px"
                 >
                     <thead class="bg-primary">
                         <tr>
@@ -62,9 +64,14 @@
                         </tr>
                     </tbody>
                 </q-markup-table>
+            </transition>   
         </div>
-        <div class="row">
-            <h6 class="text-center col-12">Users Table</h6>
+        <div class="row" v-if="getUsers">
+      <transition appear enter-active-class="animated zoomIn" leave-active-class="animated zoomOut"> 
+            <h6 class="text-center col-12" key="head">Users Table</h6>
+      </transition>
+
+      <transition appear enter-active-class="animated zoomIn" leave-active-class="animated zoomOut"> 
                 <q-select
                 label="Year of study"
                 transition-show="flip-up"
@@ -75,7 +82,10 @@
                 v-model="level"
                 :options="levelOptions"
                 class="col-5 q-pa-sm"
+                key="level"
             />
+      </transition>
+      <transition appear enter-active-class="animated zoomIn" leave-active-class="animated zoomOut"> 
             <q-select
                 label="payment status"
                 transition-show="flip-up"
@@ -86,7 +96,10 @@
                 v-model="paymentStatus"
                 :options="paymentStatusOptions"
                 class="col-4 q-pa-sm"
+                key="status"
             />
+      </transition>
+      <transition appear enter-active-class="animated zoomIn" leave-active-class="animated zoomOut"> 
             <q-select
                 label="Sort by Semester"
                 transition-show="flip-up"
@@ -97,8 +110,10 @@
                 v-model="semester"
                 :options="semesterOptions"
                 class="col-3 q-pa-sm"
+                key="semester"
             />
-            <div align="center" class="text-center row">
+      </transition>
+            <div align="center" class="text-center row" key="div">
                 <q-input 
                     label="Search email"
                     class="q-pa-sm  col-12"
@@ -115,8 +130,14 @@
                     </template>
                 </q-input>
             </div>
+      <transition appear enter-active-class="animated zoomIn" leave-active-class="animated zoomOut"> 
             <div class="col-12">
-                <q-markup-table flat bordered class="markup-table my-sticky-header-table" v-if="getUsers">
+                <q-markup-table 
+                    flat 
+                    bordered 
+                    class="markup-table my-sticky-header-table"
+                    v-if="getUsers"
+                    style="height: 400px">
                     <thead class="bg-teal">
                         <tr>
                             <th class="text-left text-white">S/N</th>
@@ -158,6 +179,7 @@
                     </tbody>
                 </q-markup-table>
             </div>
+      </transition>
         </div>
         <!-- dialog for semester fee -->
     <q-dialog v-model="dialog">

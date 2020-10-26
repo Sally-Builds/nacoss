@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {Loading, Notify, Cookies, LocalStorage} from 'quasar'
+import {Loading, Notify, Cookies, LocalStorage, QSpinnerPie} from 'quasar'
 const state = {
     dues: null
 }

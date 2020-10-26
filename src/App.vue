@@ -10,7 +10,7 @@ export default {
    mounted() {
     //get dues on mounted
     // this.fetchUser()
-    // this.getDues()
+    this.getDues()
   },
   methods: {
     ...mapActions('auth', ['fetchUser']),
